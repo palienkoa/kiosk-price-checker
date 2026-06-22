@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <!-- Авто-повернення на заставку через 10с, якщо нічого не сканують далі. -->
+    <meta http-equiv="refresh" content="10; url=/">
+    <title>Перевірка ціни</title>
+    <style type="text/css">
+        html, body { height: 100%; margin: 0; }
+        body {
+            font-family: Arial, sans-serif;
+            /* Сучасний браузер: */
+            background: #2a5db0;
+            background: -webkit-linear-gradient(top, #3a6fc4, #1c4690);
+            background: linear-gradient(180deg, #3a6fc4, #1c4690);
+            /* IE6/IE7: власний фільтр-градієнт (вертикальний). */
+            filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#3a6fc4', endColorstr='#1c4690');
+        }
+        .layout { width: 100%; height: 100%; }
+        .left  { width: 56%; vertical-align: middle; padding: 0 3%; text-align: center; }
+        .right { width: 38%; vertical-align: middle; text-align: center; }
+
+        .head    { color: #ffffff; font-size: 30px; font-weight: bold; margin: 0; }
+        .subhead { color: #cfe0f7; font-size: 15px; margin: 4px 0 18px 0; }
+
+        /* border-radius ігнориться на IE6 -> там буде прямокутна картка (ок). */
+        .card  { background: #ffffff; border-radius: 14px; padding: 16px 18px; }
+        .name  { font-size: 22px; color: #222222; margin-bottom: 6px; }
+        .price { font-size: 52px; font-weight: bold; color: #e2001a; margin: 4px 0; }
+        .stock { font-size: 12px; color: #777777; margin-top: 6px; }
+
+        .foot  { color: #cfe0f7; font-size: 13px; margin-top: 22px; }
+
+        /* На ноуті — білий овальний кадр; на кіоску овал запікатимемо в саму картинку. */
+        .frame { background: #ffffff; border-radius: 50%; padding: 12px; }
+        .photo { width: 160px; }
+
+        .notfound { color: #ffffff; font-size: 30px; font-weight: bold; }
+        .offscreen { position: absolute; left: -1000px; top: 0; width: 1px; height: 1px; }
+    </style>
+</head>
+<body>
+    <table class="layout" cellpadding="0" cellspacing="0"><tr>
+        <td class="left">
+            <div class="head">Перевірка ціни</div>
+            <div class="subhead">Піднесіть штрихкод до сканера</div>
+
+            {% if product %}
+                <div class="card">
+                    <div class="name">{{ product.name }}</div>
+                    <div class="price">{{ "%.2f"|format(product.price) }} грн</div>
+                    <div class="stock">Залишок: {{ product.qty }} &nbsp;|&nbsp; ШК: {{ barcode }}</div>
+                </div>
+                <div class="foot">Найкращі ціни — для вас</div>
+            {% else %}
+                <div class="card">
+                    <div class="notfound" style="color:#b00;">Товар не знайдено</div>
+                    <div class="stock">ШК: {{ barcode }}</div>
+                </div>
+            {% endif %}
+        </td>
+
+        <td class="right">
+            {% if product and product.img %}
+                <span class="frame"><img class="photo" src="/static/images/{{ product.img }}" alt=""></span>
+            {% endif %}
+        </td>
+    </tr></table>
+
+    <!-- Приховане поле для наступного скану. -->
+    <form method="get" action="/">
+        <input class="offscreen" type="text" name="barcode" autofocus>
+    </form>
+
+    <script type="text/javascript">
+        function focusBarcode() { document.forms[0].barcode.focus(); }
+        window.onload = focusBarcode;
+        document.forms[0].barcode.onblur = function () { setTimeout(focusBarcode, 50); };
+    </script>
+</body>
+</html>

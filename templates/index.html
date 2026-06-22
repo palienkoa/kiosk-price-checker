@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Перевірка ціни</title>
+    <style type="text/css">
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; background: #eaf4fb; }
+        .wrap { padding-top: 36px; }
+        .title { font-size: 30px; font-weight: bold; color: #1a4e7a; letter-spacing: 1px; }
+        .sub { font-size: 16px; color: #555; margin-top: 8px; }
+        .barcode { margin: 28px auto 0 auto; }
+        .barcode td { height: 72px; font-size: 1px; }
+        /* Приховане поле: зсуваємо за екран, а не display:none — інакше IE6 не дасть фокус. */
+        .offscreen { position: absolute; left: -1000px; top: 0; width: 1px; height: 1px; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="title">ВІДСКАНУЙТЕ ТОВАР</div>
+        <div class="sub">Піднесіть штрихкод до сканера</div>
+
+        <!-- Проста "картинка" штрихкоду таблицею: надійно навіть на IE6 (без SVG/PNG). -->
+        <table class="barcode" cellpadding="0" cellspacing="0"><tr>
+            <td width="4" bgcolor="#000"></td><td width="3" bgcolor="#fff"></td>
+            <td width="2" bgcolor="#000"></td><td width="2" bgcolor="#fff"></td>
+            <td width="6" bgcolor="#000"></td><td width="3" bgcolor="#fff"></td>
+            <td width="2" bgcolor="#000"></td><td width="4" bgcolor="#fff"></td>
+            <td width="5" bgcolor="#000"></td><td width="2" bgcolor="#fff"></td>
+            <td width="3" bgcolor="#000"></td><td width="3" bgcolor="#fff"></td>
+            <td width="6" bgcolor="#000"></td><td width="2" bgcolor="#fff"></td>
+            <td width="2" bgcolor="#000"></td><td width="4" bgcolor="#fff"></td>
+            <td width="4" bgcolor="#000"></td><td width="2" bgcolor="#fff"></td>
+            <td width="3" bgcolor="#000"></td><td width="3" bgcolor="#fff"></td>
+            <td width="5" bgcolor="#000"></td><td width="2" bgcolor="#fff"></td>
+            <td width="2" bgcolor="#000"></td><td width="4" bgcolor="#fff"></td>
+            <td width="6" bgcolor="#000"></td>
+        </tr></table>
+    </div>
+
+    <!-- Невидиме поле ловить скан; Enter від сканера сабмітить форму. -->
+    <form method="get" action="/">
+        <input class="offscreen" type="text" name="barcode" autofocus>
+    </form>
+
+    <script type="text/javascript">
+        function focusBarcode() { document.forms[0].barcode.focus(); }
+        window.onload = focusBarcode;
+        document.forms[0].barcode.onblur = function () { setTimeout(focusBarcode, 50); };
+    </script>
+</body>
+</html>
